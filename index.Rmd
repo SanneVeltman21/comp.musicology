@@ -8,6 +8,7 @@ output:
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
+library(ggplot2)
 ```
 
 Column {data-width=650}
@@ -15,6 +16,16 @@ Column {data-width=650}
 
 
 ### Chart A
+```{r}
+  #histogram of marlontrance and ninetiestrance together in one plot
+playlist |>
+  ggplot(aes(x = energy)) +
+  geom_histogram(binwidth = 0.1) +
+  facet_wrap(~category) + ggtitle("histogram of marlontrance and ninetiestrance")
+```
+
+
+
 ### Introduction
 Dear reader,
 
@@ -26,11 +37,6 @@ test 2
 
 ### First visualisation
 test 3
- #histogram of marlontrance and ninetiestrance together in one plot
-playlist |>
-  ggplot(aes(x = energy)) +
-  geom_histogram(binwidth = 0.1) +
-  facet_wrap(~category) + ggtitle("histogram of marlontrance and ninetiestrance")
 
 
 *
