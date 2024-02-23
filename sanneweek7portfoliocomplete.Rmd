@@ -1,0 +1,118 @@
+---
+title: "demo markdown"
+output: html_document
+date: "2024-02-14"
+---
+```{r}
+library(tidyverse)
+library(spotifyr)
+
+#url playlist loading
+marlontrance <- get_playlist_audio_features("", "3NWwKs2JQojarPYbyutt4A") 
+ninetiestrance <- get_playlist_audio_features("", "1qMDo0v81z0WatiQsZT8yY") 
+
+  #shortcut for playlists
+playlist <-
+  bind_rows(
+    commus |> mutate(category = "marlontrance"),
+    weekdisc0 |> mutate(category = "ninetiestrance")
+  )
+
+  #histogram of marlontrance and ninetiestrance together in one plot
+playlist |>
+  ggplot(aes(x = energy)) +
+  geom_histogram(binwidth = 0.1) +
+  facet_wrap(~category) + ggtitle("histogram of marlontrance and ninetiestrance")
+
+  #Energy versus valence on marlontrance and ninetiestrance together in one plot
+playlist |> ggplot(aes(x = valence, y = energy)) + geom_point() + geom_smooth() + facet_wrap(~category) + ggtitle("smooth curve of marlontrance and ninetiestrance")
+
+
+  #making 2 plots in one plot, i want to compare ninetiestrance with marlontrance playlist
+playlist |>                    #I started with the 2 playlists
+  mutate(
+    mode = ifelse(mode == 0, "Minor", "Major")
+  ) |>
+  ggplot(                     #This is the code I used for making the plot with ggplot2
+    aes(
+      x = valence,
+      y = energy,
+      size = loudness,
+      colour = mode
+    )
+  ) +
+  geom_point() +              #first I tried a scatterplot
+  geom_rug(linewidth = 0.1) + #deciding that the border is 0.1
+  geom_text(                  #valence versus energy labels
+    aes(
+      x = valence,
+      y = energy,
+      label = label
+    ),
+    data = 
+      tibble(
+        label = c("", "  "),
+        category = c("ninetiestrance"),
+        valence = c(0.104, 0.0339),
+        energy = c(0.992, 0.00166)
+      ),
+    colour = "black",         #colour of the plot
+    size = 2,                 #size of the plot 
+    hjust = "left",           #making left side
+    vjust = "center",         #making right side
+    nudge_x = 0.02            #making the label slightly to the right
+  ) +
+  facet_wrap(~ category) +    #using both my playlist in two plots in one
+  scale_x_continuous(         #fine-tune the x axis
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),   #use grid-lines for quadrants only.
+    minor_breaks = NULL       #remove 'minor' grid-lines.
+  ) +
+  scale_y_continuous(         #fine-tune the y axis in the same way.
+    limits = c(0, 1),
+    breaks = c(0, 0.50, 1),
+    minor_breaks = NULL
+  ) +
+  scale_colour_brewer(        #color brewer is used for making a palette
+    type = "qual",            #qualitative set
+    palette = "Paired"        #name of the palette is 'Paired'
+  ) +
+  scale_size_continuous(      #fine-tune the sizes of each point
+    trans = "exp",            #use an exp transformation to emphasise loud
+    guide = "none"            #remove the legend for size
+  ) +
+  theme_light() +             #making the theme light
+  labs(
+    x = "Valence",
+    y = "Energy",
+    colour = "Mode"
+  )
+
+
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
