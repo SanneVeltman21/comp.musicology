@@ -37,7 +37,13 @@ test 2
 
 ### First visualisation
 test 3
-
+```{r}
+  #Energy versus valence on marlontrance and ninetiestrance together in one plot
+playlist |> ggplot(aes(x = valence, y = energy)) + geom_point() + geom_smooth() + facet_wrap(~category) + ggtitle("smooth curve of marlontrance and ninetiestrance")
+```
+```{r}
+```
+ 
 
 *
 test 4
